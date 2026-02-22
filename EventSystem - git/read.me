@@ -1,0 +1,533 @@
+# 🚀 راهنمای نصب از صفر EventPro
+
+***
+
+## 📋 فهرست
+
+1. [آماده‌سازی کامپیوتر](#مرحله-۱-آماده-سازی-کامپیوتر)
+2. [دریافت فایل‌های پروژه](#مرحله-۲-دریافت-فایل-های-پروژه)
+3. [نصب Docker](#مرحله-۳-نصب-docker)
+4. [راه‌اندازی با یک دستور](#مرحله-۴-راه-اندازی-با-یک-دستور)
+5. [راه‌اندازی Frontend](#مرحله-۵-راه-اندازی-frontend)
+6. [تست و استفاده](#مرحله-۶-تست-و-استفاده)
+
+***
+
+## ⭐ مرحله ۱: آماده‌سازی کامپیوتر
+
+### Windows
+
+#### ۱.۱ نصب Docker Desktop
+
+1. **دانلود Docker Desktop:**
+   - برو به: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
+   - کلیک روی **Download for Windows**
+
+2. **نصب:**
+   - فایل دانلود شده رو اجرا کن
+   - همه گزینه‌ها رو پیش‌فرض بذار و **Install** بزن
+   - بعد از نصب، کامپیوتر رو **Restart** کن
+
+3. **اجرا:**
+   - Docker Desktop رو باز کن
+   - منتظر بمون تا در پایین چپ بنویسه: **Engine running** (سبز رنگ)
+
+#### ۱.۲ نصب Node.js
+
+1. برو به: [https://nodejs.org/](https://nodejs.org/)
+2. دکمه سبز **LTS** رو دانلود کن (مثلاً v20.x.x)
+3. نصب کن با تنظیمات پیش‌فرض
+
+***
+
+### macOS
+
+#### ۱.۱ نصب Docker Desktop
+
+1. برو به: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
+2. **Download for Mac** (Apple Chip یا Intel رو انتخاب کن)
+3. فایل `.dmg` رو باز کن و Docker رو به Applications بکش
+4. Docker Desktop رو باز کن و منتظر بمون تا آماده بشه
+
+#### ۱.۲ نصب Node.js
+
+```bash
+# نصب Homebrew اگه نداری
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# نصب Node.js
+brew install node
+```
+
+***
+
+### Linux (Ubuntu/Debian)
+
+```bash
+# نصب Docker
+sudo apt update
+sudo apt install docker.io docker-compose -y
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker $USER
+
+# نصب Node.js
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# لاگ اوت و لاگین کن تا تغییرات اعمال بشه
+```
+
+***
+
+## 📁 مرحله ۲: دریافت فایل‌های پروژه
+
+### روش ساده (توصیه می‌شود)
+
+1. **دانلود ZIP:**
+   - برو به: [https://github.com/hoseinmos79/new-bot](https://github.com/hoseinmos79/new-bot)
+   - کلیک روی دکمه سبز **Code**
+   - کلیک روی **Download ZIP**
+
+2. **Extract:**
+   - فایل ZIP رو باز کن
+   - پوشه رو به دسکتاپ یا جای دلخواه منتقل کن
+
+3. **نام‌گذاری:**
+   - پوشه رو rename کن به `EventPro` (برای راحتی)
+
+***
+
+## 🐳 مرحله ۳: نصب Docker
+
+این مرحله رو در [مرحله ۱](#مرحله-۱-آماده-سازی-کامپیوتر) انجام دادیم.
+
+**چک کردن نصب Docker:**
+
+```bash
+docker --version
+# باید نمایش بده: Docker version 24.x.x
+
+docker-compose --version
+# باید نمایش بده: Docker Compose version v2.x.x
+```
+
+✅ اگر این دستورات کار کردند، Docker آماده است!
+
+***
+
+## 🎯 مرحله ۴: راه‌اندازی Backend با یک دستور!
+
+### ۴.۱ ساخت فایل تنظیمات
+
+**Windows:**
+1. پوشه `EventPro/EventSystem - git/backend/` رو باز کن
+2. راست کلیک → **New** → **Text Document**
+3. اسمش رو بذار `.env` (نه `.env.txt`)
+4. فایل رو با Notepad باز کن و این‌ها رو بنویس:
+
+**macOS/Linux:**
+```bash
+cd ~/Desktop/EventPro/EventSystem\ -\ git/backend/
+touch .env
+nano .env
+```
+
+**محتوای فایل `.env`:**
+```env
+SECRET_KEY=django-insecure-production-key-change-this-12345
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+DB_NAME=eventdb
+DB_USER=eventuser
+DB_PASSWORD=eventpass
+DB_HOST=db
+DB_PORT=5432
+```
+
+⚠️ **نکته مهم:** `DB_HOST=db` باید دقیقاً همین باشه (نه `127.0.0.1`)
+
+***
+
+### ۴.۲ اجرای Docker Compose
+
+**Windows (PowerShell یا CMD):**
+```bash
+cd Desktop\EventPro\EventSystem - git\backend
+docker-compose up -d
+```
+
+**macOS/Linux:**
+```bash
+cd ~/Desktop/EventPro/EventSystem\ -\ git/backend/
+docker-compose up -d
+```
+
+✅ **خروجی موفق:**
+```
+Creating network "backend_default" with the default driver
+Creating event_pro_db ... done
+Creating event_pro_web ... done
+```
+
+***
+
+### ۴.۳ ایجاد جداول دیتابیس
+
+```bash
+# ورود به کانتینر بکند
+docker exec -it event_pro_web bash
+
+# داخل کانتینر:
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+**ساخت کاربر ادمین:**
+```
+Username: admin
+Email: admin@example.com
+Password: [رمز دلخواه]
+Password (again): [تکرار رمز]
+```
+
+✅ پیام موفقیت: `Superuser created successfully.`
+
+**خروج از کانتینر:**
+```bash
+exit
+```
+
+***
+
+### ۴.۴ چک کردن Backend
+
+1. مرورگر رو باز کن
+2. برو به: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
+3. باید صفحه لاگین Django رو ببینی!
+
+✅ **Backend آماده است!**
+
+***
+
+## 🎨 مرحله ۵: راه‌اندازی Frontend
+
+### ۵.۱ باز کردن Terminal جدید
+
+**Windows:**
+- `Windows + R` → بنویس `cmd` → Enter
+- یا PowerShell رو باز کن
+
+**macOS:**
+- `Cmd + Space` → بنویس `Terminal` → Enter
+
+**Linux:**
+- `Ctrl + Alt + T`
+
+***
+
+### ۵.۲ رفتن به پوشه Frontend
+
+**Windows:**
+```bash
+cd Desktop\EventPro\EventSystem - git\frontend
+```
+
+**macOS/Linux:**
+```bash
+cd ~/Desktop/EventPro/EventSystem\ -\ git/frontend/
+```
+
+***
+
+### ۵.۳ ساخت فایل تنظیمات Frontend
+
+**Windows:**
+1. در همان پوشه `frontend/` یک فایل بساز به اسم `.env.local`
+2. باز کن با Notepad و بنویس:
+
+**macOS/Linux:**
+```bash
+touch .env.local
+nano .env.local
+```
+
+**محتوای فایل `.env.local`:**
+```env
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+```
+
+⚠️ **خیلی مهم:** اسم فایل باید `.env.local` باشه نه `.env`
+
+***
+
+### ۵.۴ نصب کتابخانه‌ها
+
+```bash
+npm install
+```
+
+⏳ این مرحله ممکنه 2-3 دقیقه طول بکشه. صبور باش!
+
+***
+
+### ۵.۵ اجرای Frontend
+
+```bash
+npm run dev
+```
+
+✅ **خروجی موفق:**
+```
+▲ Next.js 16.1.6
+- Local:        http://localhost:3000
+
+✓ Ready in 2.1s
+```
+
+***
+
+## 🧪 مرحله ۶: تست و استفاده
+
+### ۶.۱ چک کردن Frontend
+
+1. مرورگر رو باز کن
+2. برو به: [http://localhost:3000](http://localhost:3000)
+3. باید صفحه اصلی سایت رو ببینی!
+
+***
+
+### ۶.۲ ایجاد رویداد نمونه
+
+1. برو به پنل ادمین: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
+2. لاگین کن با `admin` و رمزی که ساختی
+
+#### الف) ساخت دسته‌بندی:
+- کلیک روی **Categories** → **Add Category**
+- **Title:** کنسرت
+- **Description:** رویدادهای موسیقی
+- Save
+
+#### ب) ساخت مدرس:
+- کلیک روی **Lecturers** → **Add Lecturer**
+- **Name:** علی احمدی
+- **Specialty:** خواننده پاپ
+- Save
+
+#### ج) ساخت رویداد:
+- کلیک روی **Events** → **Add Event**
+- **Title:** کنسرت علی احمدی
+- **Description:** کنسرت زنده در تهران
+- **Location:** سالن میلاد
+- **Start time:** (انتخاب تاریخ آینده)
+- **Price:** 500000
+- **Capacity:** 100
+- **Category:** کنسرت
+- **Lecturer:** علی احمدی
+- **Is active:** ✅ تیک بزن
+- Save
+
+***
+
+### ۶.۳ تست از سمت کاربر
+
+1. برو به [http://localhost:3000](http://localhost:3000)
+2. کلیک روی **ثبت‌نام**
+3. یک حساب کاربری بساز
+4. رویداد رو پیدا کن و **خرید بلیت** کن
+5. برو به **داشبورد** — باید بلیط با QR Code رو ببینی!
+
+***
+
+## 🔄 دستورات مفید روزانه
+
+### شروع کار (هر بار که کامپیوتر رو روشن می‌کنی)
+
+```bash
+# Backend (اگه Docker Desktop باز باشه، خودکار اجرا میشه)
+# اگه متوقف شده:
+cd backend/
+docker-compose up -d
+
+# Frontend (Terminal جدید)
+cd frontend/
+npm run dev
+```
+
+***
+
+### توقف سرورها
+
+```bash
+# Backend
+cd backend/
+docker-compose down
+
+# Frontend
+# در Terminal فرانت: Ctrl + C
+```
+
+***
+
+### دیدن لاگ‌ها (اگه مشکلی بود)
+
+```bash
+# لاگ Backend
+docker logs event_pro_web
+
+# لاگ دیتابیس
+docker logs event_pro_db
+```
+
+***
+
+## 🐛 حل مشکلات رایج
+
+### مشکل ۱: `port 8000 is already in use`
+
+**راه حل:**
+```bash
+# پیدا کردن پروسس
+# Windows:
+netstat -ano | findstr :8000
+
+# macOS/Linux:
+lsof -i :8000
+
+# کشتن پروسس (PID رو جایگزین کن)
+kill -9 <PID>
+```
+
+***
+
+### مشکل ۲: `Cannot connect to database`
+
+**راه حل:**
+```bash
+# چک کن کانتینر دیتابیس اجراست
+docker ps
+
+# اگه نیست:
+docker-compose up -d db
+
+# چک کردن سلامت
+docker exec -it event_pro_db psql -U eventuser -d eventdb
+```
+
+***
+
+### مشکل ۳: `CORS policy error` در مرورگر
+
+**راه حل:**
+1. چک کن فایل `.env.local` در پوشه `frontend/` هست
+2. مطمئن شو محتواش دقیقاً این باشه:
+   ```
+   NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+   ```
+3. Frontend رو restart کن (Ctrl+C و دوباره `npm run dev`)
+
+***
+
+### مشکل ۴: Docker نمی‌تونه start بشه (Windows)
+
+**راه حل:**
+1. **Enable Virtualization** در BIOS:
+   - Restart کامپیوتر
+   - در startup مداوم Del یا F2 بزن
+   - پیدا کن: `Virtualization Technology` یا `Intel VT-x` یا `AMD-V`
+   - **Enable** کن
+   - Save & Exit
+
+2. **Enable WSL 2:**
+   ```powershell
+   # در PowerShell (Run as Administrator)
+   wsl --install
+   wsl --set-default-version 2
+   ```
+
+***
+
+## 📊 معماری سیستم
+
+```
+┌─────────────┐         ┌──────────────┐         ┌───────────────┐
+│             │         │              │         │               │
+│  Frontend   │────────▶│   Backend    │────────▶│  PostgreSQL   │
+│  Next.js    │ HTTP    │   Django     │  SQL    │   Database    │
+│  Port 3000  │         │  Port 8000   │         │  Port 54321   │
+│             │         │              │         │               │
+└─────────────┘         └──────────────┘         └───────────────┘
+     │                         │                         │
+     │                         │                         │
+     └─────────────Docker Containers─────────────────────┘
+```
+
+***
+
+## 📂 ساختار پروژه
+
+```
+EventPro/
+└── EventSystem - git/
+    ├── backend/                    # Django Backend
+    │   ├── docker-compose.yml      # 🔑 کانفیگ Docker
+    │   ├── Dockerfile              # تصویر Docker
+    │   ├── .env                    # 🔑 تنظیمات Backend
+    │   ├── requirements.txt        # کتابخانه‌های Python
+    │   ├── manage.py               # دستورات Django
+    │   ├── backend/                # تنظیمات اصلی
+    │   ├── core/                   # احراز هویت
+    │   ├── events/                 # رویدادها
+    │   ├── payments/               # پرداخت
+    │   ├── media/                  # فایل‌های آپلود
+    │   └── pgdata/                 # داده‌های دیتابیس (خودکار ساخته میشه)
+    │
+    └── frontend/                   # Next.js Frontend
+        ├── .env.local              # 🔑 تنظیمات Frontend
+        ├── package.json            # کتابخانه‌های JS
+        ├── src/
+        │   ├── app/                # صفحات
+        │   ├── components/         # کامپوننت‌ها
+        │   └── context/            # State management
+        └── public/                 # فایل‌های استاتیک
+```
+
+***
+
+## ✅ چک‌لیست نهایی
+
+### نصب ابزارها
+- [ ] Docker Desktop نصب و در حال اجراست
+- [ ] Node.js نصب شده (`node --version` کار می‌کنه)
+- [ ] فایل‌های پروژه دانلود و Extract شده
+
+### Backend
+- [ ] فایل `.env` در `backend/` ساخته شده
+- [ ] `docker-compose up -d` اجرا شده
+- [ ] `docker ps` دو کانتینر نمایش می‌ده: `event_pro_db` و `event_pro_web`
+- [ ] `python manage.py migrate` داخل کانتینر اجرا شده
+- [ ] Superuser ساخته شده
+- [ ] `http://127.0.0.1:8000/admin/` باز می‌شه
+
+### Frontend
+- [ ] فایل `.env.local` در `frontend/` ساخته شده
+- [ ] `npm install` اجرا شده (بدون error)
+- [ ] `npm run dev` اجرا شده
+- [ ] `http://localhost:3000` باز می‌شه
+
+### تست نهایی
+- [ ] می‌تونی رویداد بسازی از پنل ادمین
+- [ ] می‌تونی ثبت‌نام کنی از Frontend
+- [ ] می‌تونی بلیط بخری
+- [ ] بلیط با QR Code در داشبورد نمایش داده میشه
+
+***
+
+## 🎉 تبریک!
+
+سیستم EventPro کاملاً آماده است! حالا می‌تونی:
+- رویدادهای جدید اضافه کنی
+- کاربران بتونن ثبت‌نام کنن و بلیط بخرن
+- QR Code بلیط‌ها رو اسکن کنی
+- گزارش‌های فروش ببینی
